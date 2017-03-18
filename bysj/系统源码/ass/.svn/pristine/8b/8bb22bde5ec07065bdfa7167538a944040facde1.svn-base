@@ -1,0 +1,141 @@
+package com.edu.zzti.ass.testlibrary.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.poi.ss.formula.functions.T;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.edu.zzti.ass.management.model.TTeacher;
+import com.edu.zzti.ass.onlinestudy.dao.IOnlineStudyDao;
+import com.edu.zzti.ass.onlinestudy.model.TestAnswer;
+import com.edu.zzti.ass.onlinestudy.model.TestPaper;
+import com.edu.zzti.ass.testlibrary.dao.IJudgeDao;
+import com.edu.zzti.ass.testlibrary.dao.ISingleselDao;
+import com.edu.zzti.ass.testlibrary.dao.ISubjectiveDao;
+import com.edu.zzti.ass.testlibrary.dao.ITChapterDao;
+import com.edu.zzti.ass.testlibrary.dao.ITSectorDao;
+import com.edu.zzti.ass.testlibrary.dao.ITunitDao;
+import com.edu.zzti.ass.testlibrary.model.Judge;
+import com.edu.zzti.ass.testlibrary.model.Singlesel;
+import com.edu.zzti.ass.testlibrary.model.Subjective;
+import com.edu.zzti.ass.testlibrary.model.TChapter;
+import com.edu.zzti.ass.testlibrary.model.TSector;
+import com.edu.zzti.ass.testlibrary.service.ILibraryService;
+
+@Service("libraryService")
+public class LibraryServiceImpl implements ILibraryService {
+
+	@Autowired
+	private IJudgeDao judgeDao;
+	@Autowired
+	private ISingleselDao singleselDao;
+	@Autowired
+	private ISubjectiveDao subjectiveDao;
+	@Autowired
+	private ITChapterDao chapterDao;
+	@Autowired
+	private ITSectorDao sectorDao;
+
+
+	@Override
+	public Map<String, List> find(Integer sectorId) {
+		Map<String, List> map = new HashMap<String, List>();
+		map.put("judge", judgeDao.getJudgeBySecId(sectorId));
+		map.put("singlesel", singleselDao.getSingleselBySecId(sectorId));
+		map.put("subjective", subjectiveDao.getSubjectiveBySecId(sectorId));
+		return map;
+	}
+
+	@Override
+	public List<TChapter> checkChapter(Integer unitId) {
+		return chapterDao.getChapters(unitId);
+	}
+
+	@Override
+	public List<TSector> checkSector(Integer chapterId) {
+
+		return sectorDao.getSectors(chapterId);
+	}
+
+	@Override
+	public Map<String, List> all(Integer sectorId) {
+		Map<String, List> map = new HashMap<String, List>();
+		map.put("judge", judgeDao.getBySecId(sectorId));
+		map.put("singlesel", singleselDao.getBySecId(sectorId));
+		map.put("subjective", subjectiveDao.getBySecId(sectorId));
+		return map;
+	}
+
+	@Override
+	public Judge getByJudgeId(Integer id) {
+		return judgeDao.getById(Judge.class, id);
+	}
+
+	@Override
+	public Singlesel getBySingleId(Integer id) {
+		
+		return singleselDao.getById(Singlesel.class, id);
+	}
+
+	@Override
+	public Subjective getBySubjecId(Integer id) {
+		
+		return subjectiveDao.getById(Subjective.class, id);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public TestPaper addTest(String paperName, HttpSession httpSession) {
+		TestPaper testPaper = new TestPaper();
+		testPaper.setCreateDate(new Date());
+		testPaper.setPagerName(paperName);
+		testPaper.setIsRelease(0);
+		TTeacher teacher = new TTeacher();
+		teacher = (TTeacher) httpSession.getAttribute("teacher");
+		teacher.setId(teacher.getId());
+		testPaper.setTeacher(teacher);
+		/*
+		 * 填充answer试题库
+		 */
+		TestAnswer answer = new TestAnswer();
+		List<Integer> judList = (List<Integer>) httpSession.getAttribute("judgeId");
+		List<Integer> sinList = (List<Integer>) httpSession.getAttribute("singleselId");
+		List<Integer> subList = (List<Integer>) httpSession.getAttribute("subjectiveId");
+		if (judList == null) {
+			judList = new ArrayList<Integer>();
+		}
+		if (sinList == null) {
+			sinList = new ArrayList<Integer>();
+		}
+		if (subList == null) {
+			subList = new ArrayList<Integer>();
+		}
+		List<Judge> judges = new ArrayList<Judge>();
+		for (Integer judId : judList) {
+			judges.add(getByJudgeId(judId));
+		}
+		List<Singlesel> singlesels = new ArrayList<Singlesel>();
+		for (Integer sinId : sinList) {
+			singlesels.add(getBySingleId(sinId));
+		}
+		List<Subjective> subjectives = new ArrayList<Subjective>();
+		for (Integer subId : subList) {
+			subjectives.add(getBySubjecId(subId));
+		}
+		
+		
+		
+		
+		/*answer.setJudgeAnswers(judgeAnswers);*/
+		testPaper.setTestAnswer(answer);
+		return null;
+	}
+
+}

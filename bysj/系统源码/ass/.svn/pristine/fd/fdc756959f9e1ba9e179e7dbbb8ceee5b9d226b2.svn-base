@@ -1,0 +1,141 @@
+package com.edu.zzti.ass.testlibrary.controller;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.alibaba.fastjson.JSONArray;
+import com.edu.zzti.ass.testlibrary.model.TChapter;
+import com.edu.zzti.ass.testlibrary.model.TSector;
+import com.edu.zzti.ass.testlibrary.model.TUnit;
+import com.edu.zzti.ass.testlibrary.service.ILibraryService;
+import com.edu.zzti.ass.testlibrary.service.ITestPaperService;
+
+@Controller
+@RequestMapping("/front")
+public class LibraryController {
+	@Autowired
+	private ITestPaperService testPaperService;
+	@Autowired
+	private ILibraryService libraryService;
+
+	/**
+	 * 访问addTjudge页面 添加属性
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/library/{sectorId}", method = { RequestMethod.GET })
+	public ModelAndView library(@PathVariable Integer sectorId) {
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("sector", this.testPaperService.find().get("sector"));
+		mav.addObject("judge", this.libraryService.find(sectorId).get("judge"));
+		mav.addObject("singlesel",
+				this.libraryService.find(sectorId).get("singlesel"));
+		mav.addObject("subjective",
+				this.libraryService.find(sectorId).get("subjective"));
+		mav.setViewName("library");
+		return mav;
+	}
+
+	@RequestMapping(value = "/library1", method = { RequestMethod.GET })
+	public ModelAndView addTJudge(Model model) {
+		ModelAndView mav = new ModelAndView();
+		/**
+		 * 
+		 */
+		System.out.println(testPaperService.find().get("unit").get(0));
+		List<TUnit> units = testPaperService.find().get("unit");
+		mav.addObject("units", units);
+		mav.setViewName("library1");
+		return mav;
+	}
+
+	@RequestMapping(value = "/test1", method = { RequestMethod.GET })
+	public ModelAndView test1(Model model) {
+		ModelAndView mav = new ModelAndView();
+		/**
+		 * 
+		 */
+		List<TUnit> units = testPaperService.find().get("unit");
+		mav.addObject("units", units);
+		mav.setViewName("test1");
+		return mav;
+	}
+
+	@RequestMapping(value = "/test1/{unitId}", method = { RequestMethod.GET })
+	public ModelAndView test2(@PathVariable Integer unitId) {
+		ModelAndView mav = new ModelAndView();
+		List<TUnit> units = testPaperService.find().get("unit");
+		List<TChapter> chapters = libraryService.checkChapter(unitId);
+		mav.addObject("units", units);
+		mav.addObject("chapters", chapters);
+		mav.setViewName("test1");
+		return mav;
+	}
+
+	@RequestMapping(value = "/test1/{unitId}/{chapterId}", method = { RequestMethod.GET })
+	public ModelAndView test3(@PathVariable Integer unitId,
+			@PathVariable Integer chapterId) {
+		ModelAndView mav = new ModelAndView();
+		List<TUnit> units = testPaperService.find().get("unit");
+		List<TChapter> chapters = libraryService.checkChapter(unitId);
+		List<TSector> sectors = libraryService.checkSector(chapterId);
+		mav.addObject("units", units);
+		mav.addObject("chapters", chapters);
+		mav.addObject("sectors", sectors);
+		mav.setViewName("test1");
+		return mav;
+	}
+
+	@RequestMapping(value = "/test/{sectorId}", method = { RequestMethod.GET })
+	@ResponseBody
+	public void test4(@PathVariable Integer sectorId,
+			HttpServletResponse response) {
+
+		/*JSONArray jsonArray = (JSONArray) this.libraryService.find(sectorId).get("judge");
+		JSONArray jsonArray1 = (JSONArray) this.libraryService.find(sectorId).get("singlesel");
+		JSONArray jsonArray2 = (JSONArray) this.libraryService.find(sectorId).get("subjective");*/
+		JSONArray jsonArray = new JSONArray();
+		jsonArray.add( this.libraryService.find(sectorId).get("judge"));
+		jsonArray.add(this.libraryService.find(sectorId).get("singlesel"));
+		jsonArray.add(this.libraryService.find(sectorId).get("subjective"));
+		System.out.println(jsonArray);
+		try {
+			response.getWriter().print(jsonArray);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		/*
+		 * Map<String, List> map = new HashMap<String, List>(); map.put("judge",
+		 * this.libraryService.find(sectorId).get("judge"));
+		 * map.put("singlesel",
+		 * this.libraryService.find(sectorId).get("singlesel"));
+		 * map.put("subjective"
+		 * ,this.libraryService.find(sectorId).get("subjective"));
+		 */
+	}
+
+	/*@RequestMapping(value = "/listTest/{sectorId}", method = { RequestMethod.GET })
+	public ModelAndView listTest(@PathVariable Integer sectorId) {
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("judges", this.libraryService.find(sectorId).get("judge"));
+		mav.addObject("singlesel", this.libraryService.find(sectorId).get("singlesel"));
+		mav.addObject("subjective", this.libraryService.find(sectorId).get("subjective"));
+		mav.setViewName("redirect:/front/test1");
+		return mav;
+	}*/
+}

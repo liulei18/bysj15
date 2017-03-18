@@ -1,0 +1,10 @@
+package com.edu.zzti.ass.management.service;
+
+import com.edu.zzti.ass.management.model.TStudent;
+
+
+public interface IStudentService {
+
+	public TStudent findStudent(TStudent student);
+	
+}

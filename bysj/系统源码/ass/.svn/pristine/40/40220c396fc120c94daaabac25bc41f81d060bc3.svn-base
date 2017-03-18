@@ -1,0 +1,26 @@
+package com.edu.zzti.ass.onlinestudy.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.edu.zzti.ass.onlinestudy.dao.IOnlineStudyDao;
+import com.edu.zzti.ass.onlinestudy.service.IOnlineStudyService;
+@Service("onlineStudyService")
+public class OnlineStudyServiceImpl implements IOnlineStudyService  {
+
+	@Autowired
+	private IOnlineStudyDao onlineStudyDao;
+	@Override
+	public Map<String, List> find(Integer unitId) {
+		Map<String,List> map = new HashMap<String, List>();
+		map.put("judge", onlineStudyDao.getJudgeByUnitId(unitId));
+		map.put("singlesel",onlineStudyDao.getSingleselByUnitId(unitId));
+		map.put("subjective",onlineStudyDao.getSubjectiveByUnitId(unitId));
+		return map;
+	}
+
+}

@@ -1,0 +1,18 @@
+package com.edu.zzti.ass.testlibrary.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.edu.zzti.ass.testlibrary.model.TChapter;
+import com.edu.zzti.ass.testlibrary.model.TSector;
+
+public interface ILibraryService {
+	
+	public Map<String, List> find(Integer sectorId); 
+	
+	public Map<String,List> all(Integer sectorId);
+	
+	public List<TChapter>  checkChapter(Integer unitId); 
+	
+	public List<TSector> checkSector(Integer chapterId); 
+}

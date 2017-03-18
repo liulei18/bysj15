@@ -1,0 +1,42 @@
+package com.edu.zzti.ass.management.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+@Controller
+@RequestMapping("/")
+public class QCourseController {
+	
+	 @RequestMapping(value="course", method = {RequestMethod.GET})
+	    public String login(Model model){/*
+	        model.addAttribute("teacher", new TTeacher());*/
+	        return "course";
+	    }
+	 @RequestMapping(value="learning", method = {RequestMethod.GET})
+	    public String login1(Model model){/*
+	        model.addAttribute("teacher", new TTeacher());*/
+	        return "learning";
+	    }
+
+	 @RequestMapping(value="class", method = {RequestMethod.GET})
+	    public String login2(Model model){/*
+	        model.addAttribute("teacher", new TTeacher());*/
+	        return "class";
+	    }
+	 @RequestMapping(value="library", method = {RequestMethod.GET})
+	    public String login3(Model model){/*
+	        model.addAttribute("teacher", new TTeacher());*/
+	        return "library";
+	    }
+	 @RequestMapping(value="first", method = {RequestMethod.GET})
+	    public String first(Model model){/*
+	        model.addAttribute("teacher", new TTeacher());*/
+	        return "first";
+	    }
+	 @RequestMapping(value="learning_content", method = {RequestMethod.GET})
+	    public String learningcontent(Model model){/*
+	        model.addAttribute("teacher", new TTeacher());*/
+	        return "learning_content";
+	    }
+}

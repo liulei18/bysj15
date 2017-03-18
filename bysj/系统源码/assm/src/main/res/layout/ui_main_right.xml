@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+
+    android:background="@drawable/bg_main"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="48.0dp"
+        android:background="@drawable/bg_pack_1"
+       >
+
+        <ImageView
+            android:id="@+id/ui_menuBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:paddingLeft="10.0dip"
+            android:paddingRight="10.0dip"
+            android:src="@drawable/btn_back" />
+
+        <TextView
+            android:id="@+id/center_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="专业词汇查询"
+            android:textColor="#ffffffff"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:padding="10.0dip">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal"
+            >
+            <EditText
+                android:id="@+id/ui_edit_query"
+                android:layout_weight="3"
+                android:textColor="#ffffffff"
+                android:layout_marginLeft="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <Button
+                android:id="@+id/ui_btn_search"
+                android:layout_weight="1"
+                android:layout_width="50dp"
+                android:layout_height="38dp"
+                android:background="@drawable/my_search_bg"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="20dp"
+            >
+            <TextView
+                android:id="@+id/ui_result_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffffff"
+                android:textSize="20sp"
+
+                />
+           </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

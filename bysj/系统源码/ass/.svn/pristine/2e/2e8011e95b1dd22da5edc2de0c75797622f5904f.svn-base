@@ -1,0 +1,142 @@
+package com.edu.zzti.ass.onlinestudy.controller;
+
+
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.edu.zzti.ass.core.model.PageInfo;
+import com.edu.zzti.ass.management.model.TStudent;
+import com.edu.zzti.ass.onlinestudy.model.TestAnswer;
+import com.edu.zzti.ass.onlinestudy.model.TestAnswerInfo;
+import com.edu.zzti.ass.onlinestudy.model.TestPaper;
+import com.edu.zzti.ass.onlinestudy.service.IPaperService;
+
+
+@Controller
+@RequestMapping("/paper")
+public class TestPaperController {
+	@Autowired
+	private IPaperService paperService;
+
+	@RequestMapping(value = "intoPaper/{id}", method = { RequestMethod.GET })
+	public ModelAndView intoPaper(@PathVariable Integer id) {
+		ModelAndView mav = new ModelAndView();
+		TestPaper paper = paperService.getPaper(id);
+		mav.addObject("singNum", paper.getSinglesels().size());
+		mav.addObject("judgeNum", paper.getJudges().size());
+		mav.addObject("paper", paper);
+		mav.setViewName("intoPaper");
+		return mav;
+	}
+	
+	@RequestMapping(value = "savePaper/{id}", method = { RequestMethod.POST })
+	public ModelAndView savePaper(@PathVariable Integer id,HttpSession session,HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		
+		try {
+			request.setCharacterEncoding("utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		TStudent stu = (TStudent) session.getAttribute("student");
+		String studentId = stu.getId();
+		Integer paperid = id;
+		TestPaper paper  =  paperService.getPaper(paperid);
+		boolean flag = paperService.findStuAnswer(studentId,paperid);
+		if(flag){
+			mav.addObject("info", "已经提交过了！");
+			mav.setViewName("webInfo");
+			return mav;
+		}
+
+//		Date now = new Date();
+//		if (paper.getAnswerDate().before(now)) {
+//			mav.addObject("info", "已经超时不能提交了！");
+//			mav.setViewName("info");
+//			return mav;
+//		}
+
+		List<String> singleValues = new ArrayList<>();
+		for(int i = 0 ;i<paper.getSinglesels().size();i++){
+			singleValues.add(request.getParameter("sing"+i));
+		}
+		List<String> judgeValues = new ArrayList<>();
+		for(int i = 0 ;i<paper.getJudges().size();i++){
+			judgeValues.add(request.getParameter("judge"+i));
+		}
+		List<String> subValues = new ArrayList<>();
+		for(int i = 0 ;i<paper.getSubjective().size();i++){
+			subValues.add(request.getParameter("sub"+i));
+		}
+		int count  =  singleValues.size()+judgeValues.size();
+		String singStr =paper.getTestAnswer().getSingleAnswers();
+		String judgeStr = paper.getTestAnswer().getJudgeAnswers();
+		String[] sings = singStr.split(",");
+		String[] judges = judgeStr.split(",");
+		int k = 0;
+		for(int i = 0 ;i<singleValues.size();i++){
+			if(singleValues.get(i).equals(sings[i])){
+				k++;
+			}
+		}
+		for(int i = 0 ;i<judgeValues.size();i++){
+			if(judgeValues.get(i).equals(judges[i])){
+				k++;
+			}
+		}
+		int info = k*100/count;
+		TestAnswerInfo answerInfo = new TestAnswerInfo();
+		answerInfo.setInfo(info);
+		StringBuffer sb = new StringBuffer();
+		for(String sing :singleValues){
+			sb.append(sing+",");
+		}
+		sb.deleteCharAt(sb.length()-1);
+		answerInfo.setSingleAnswers(sb.toString());
+		sb.setLength(0);
+		
+		for(String judge :judgeValues){
+			sb.append(judge+",");
+		}
+		sb.deleteCharAt(sb.length()-1);
+		answerInfo.setJudgeAnswers(sb.toString());
+		sb.setLength(0);
+		
+		for(String sub:subValues){
+			sb.append(sub+"////");
+		}
+		sb.delete(sb.length()-4, sb.length());
+		answerInfo.setSubjectAnswers(sb.toString());
+		answerInfo.setCreateDate(new Date());
+		answerInfo.setUnit(paper.getUnit());
+		answerInfo.setPaper(paper);
+		TStudent student =new TStudent();
+		student.setId(studentId);
+		answerInfo.setStudent(student);
+		paperService.saveStuAnswer(answerInfo);
+		mav.addObject("info", "练习已经提交！");
+		mav.setViewName("webInfo");
+		return mav;
+	}
+	
+
+	
+	
+
+	
+}

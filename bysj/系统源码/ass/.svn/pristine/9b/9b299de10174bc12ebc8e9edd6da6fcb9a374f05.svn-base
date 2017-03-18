@@ -1,0 +1,99 @@
+package com.edu.zzti.ass.testlibrary.controller;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.edu.zzti.ass.core.model.PageInfo;
+import com.edu.zzti.ass.testlibrary.model.Judge;
+import com.edu.zzti.ass.testlibrary.model.Singlesel;
+import com.edu.zzti.ass.testlibrary.model.TJudge;
+import com.edu.zzti.ass.testlibrary.model.TSinglesel;
+import com.edu.zzti.ass.testlibrary.service.ITestPaperService;
+
+@Controller
+@RequestMapping("/manage/tSinglesel")
+public class TSingleselController {
+	@Autowired
+	private ITestPaperService testPaperService;
+
+	@RequestMapping(value = "/listTSingleselTemp", method = { RequestMethod.GET })
+	public ModelAndView listTsinglesel() {
+		ModelAndView mav = new ModelAndView();
+		PageInfo<TSinglesel> pageInfo;
+		pageInfo = testPaperService.findAll(1, null, 2,null);
+		mav.addObject("pageInfo", pageInfo);
+		mav.setViewName("manage/listTSingleselTemp");
+		return mav;
+	}
+	
+	@RequestMapping(value = "listTSingleselTemp/{currentPage}", method = { RequestMethod.GET })
+	public ModelAndView getAll(@PathVariable Integer currentPage) {
+		ModelAndView mav = new ModelAndView();
+		if (currentPage.equals("")) {
+			currentPage = 1;
+		} 
+		PageInfo<TSinglesel> pageInfo;
+
+		pageInfo = testPaperService.findAll(currentPage, null, 2,null);
+		
+		mav.addObject("pageInfo", pageInfo);
+		mav.setViewName("manage/listTSingleselTemp");
+		return mav;
+	}
+	
+	
+	@RequestMapping(value = "singleselCheck/{id}/{skey}", method = { RequestMethod.GET })
+	public ModelAndView check(@PathVariable Integer id,@PathVariable String skey) {
+		ModelAndView mav = new ModelAndView();
+		/**
+		 * 对jkey进行解码
+		 */
+		try {
+			skey = URLDecoder.decode(skey, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		TSinglesel tSinglesel = testPaperService.getByIdTSinglesel(id);
+		mav.addObject("id",id);
+		mav.addObject("skey", skey);
+		System.out.println(id+"----"+skey);
+		mav.addObject("tSinglesel", tSinglesel);
+		PageInfo<Singlesel> pageInfo;
+		pageInfo = testPaperService.findAll(1, skey, 5,null);
+		mav.addObject("pageInfo", pageInfo);
+		mav.setViewName("manage/singleselCheck");
+		return mav;
+	}
+	
+	@RequestMapping(value = "singleselCheck/{id}", method = { RequestMethod.GET })
+	public ModelAndView delete(@PathVariable Integer id) {
+		testPaperService.deleteTSinglesel(id);
+		return listTsinglesel();
+	}
+	
+	@RequestMapping(value = "insertSinglesel/{id}", method = { RequestMethod.GET })
+	public ModelAndView insertSinglesel(@PathVariable Integer id) {
+		TSinglesel tSinglesel = testPaperService.getByIdTSinglesel(id);
+		testPaperService.deleteTSinglesel(id);
+		Singlesel singlesel = new Singlesel();
+		singlesel.setQuestion(tSinglesel.getQuestion());
+		singlesel.setAnswer(tSinglesel.getAnswer());
+		singlesel.setChoiceA(tSinglesel.getChoiceA());
+		singlesel.setChoiceB(tSinglesel.getChoiceB());
+		singlesel.setChoiceC(tSinglesel.getChoiceC());
+		singlesel.setChoiceD(tSinglesel.getChoiceD());		
+		singlesel.setSkey1(tSinglesel.getSkey1());
+		singlesel.settSector(tSinglesel.gettSector());
+		testPaperService.addSinglesel(singlesel);
+		return listTsinglesel();
+	}
+
+}

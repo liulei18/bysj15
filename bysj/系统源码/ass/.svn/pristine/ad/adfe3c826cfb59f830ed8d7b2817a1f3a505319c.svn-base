@@ -1,0 +1,450 @@
+package com.edu.zzti.ass.testlibrary.controller;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.alibaba.fastjson.JSONArray;
+import com.edu.zzti.ass.core.model.PageInfo;
+import com.edu.zzti.ass.testlibrary.model.Judge;
+import com.edu.zzti.ass.testlibrary.model.Singlesel;
+import com.edu.zzti.ass.testlibrary.model.Subjective;
+import com.edu.zzti.ass.testlibrary.model.TChapter;
+import com.edu.zzti.ass.testlibrary.model.TJudge;
+import com.edu.zzti.ass.testlibrary.model.TSector;
+import com.edu.zzti.ass.testlibrary.model.TUnit;
+import com.edu.zzti.ass.testlibrary.service.ILibraryService;
+import com.edu.zzti.ass.testlibrary.service.ITestPaperService;
+
+@Controller
+@RequestMapping("/front")
+public class LibraryController {
+	@Autowired
+	private ITestPaperService testPaperService;
+	@Autowired
+	private ILibraryService libraryService;
+
+	/**
+	 * 访问addTjudge页面 添加属性
+	 * 
+	 * @param model
+	 * @return
+	 */
+
+	@RequestMapping(value = "/test", method = { RequestMethod.GET })
+	public ModelAndView addTJudge(Model model) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("test");
+		return mav;
+	}
+
+	@RequestMapping(value = "/library", method = { RequestMethod.GET })
+	public ModelAndView library(Model model,HttpSession httpSession) {
+
+		httpSession.removeAttribute("judgeId");
+		httpSession.removeAttribute("singleselId");
+		httpSession.removeAttribute("subjectiveId");
+		httpSession.removeAttribute("count");
+		ModelAndView mav = new ModelAndView();
+		List<TUnit> units = testPaperService.find().get("unit");
+		mav.addObject("units", units);
+		mav.setViewName("library");
+		return mav;
+	}
+
+	/**
+	 * 
+	 * @param 访问人工组卷页面
+	 * @return
+	 */
+	@RequestMapping(value = "/library1", method = { RequestMethod.GET })
+	public ModelAndView library1(Model model) {
+		ModelAndView mav = new ModelAndView();
+		List<TUnit> units = testPaperService.find().get("unit");
+		mav.addObject("units", units);
+		mav.setViewName("library1");
+		return mav;
+	}
+
+	/**
+	 * 获取单元列表
+	 * 
+	 * @param unitId
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/library/{unitId}", method = { RequestMethod.GET })
+	public ModelAndView checkChapter(@PathVariable Integer unitId) {
+		ModelAndView mav = new ModelAndView();
+		List<TUnit> units = testPaperService.find().get("unit");
+		List<TChapter> chapters = libraryService.checkChapter(unitId);
+		mav.addObject("units", units);
+		mav.addObject("chapters", chapters);
+		mav.setViewName("library");
+		return mav;
+	}
+
+	/**
+	 * 刷新整个页面 得到 章
+	 * 
+	 * @param unitId
+	 * @param chapterId
+	 * @return
+	 */
+	@RequestMapping(value = "/library/{unitId}/{chapterId}", method = { RequestMethod.GET })
+	public ModelAndView checkSector(@PathVariable Integer unitId,
+			@PathVariable Integer chapterId) {
+		ModelAndView mav = new ModelAndView();
+		List<TUnit> units = testPaperService.find().get("unit");
+		List<TChapter> chapters = libraryService.checkChapter(unitId);
+		List<TSector> sectors = libraryService.checkSector(chapterId);
+		mav.addObject("units", units);
+		mav.addObject("chapters", chapters);
+		mav.addObject("sectors", sectors);
+		mav.setViewName("library");
+		return mav;
+	}
+
+	/**
+	 * 单独的 试题列表页面
+	 * 
+	 * @param sectorId
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/all/{sectorId}", method = { RequestMethod.GET })
+	public ModelAndView checkSector(@PathVariable Integer sectorId) {
+		ModelAndView mav = new ModelAndView();
+		PageInfo<Judge> pageInfo;
+		pageInfo = testPaperService.findAll(1, null, 4, sectorId, null, null);
+		mav.addObject("pageInfo", pageInfo);
+		PageInfo<Singlesel> pageInfo1;
+		pageInfo1 = testPaperService.findAll(1, null, 5, sectorId, null, null);
+		mav.addObject("pageInfo1", pageInfo1);
+		PageInfo<Subjective> pageInfo2;
+		pageInfo2 = testPaperService.findAll(1, null, 6, sectorId, null, null);
+		mav.addObject("pageInfo2", pageInfo2);
+		mav.setViewName("listPageTest");
+		return mav;
+	}
+
+	/**
+	 * 所有试题展示页面 ajax 实现遍历 暂时没用到
+	 * 
+	 * @param sectorId
+	 * @param response
+	 */
+	@RequestMapping(value = "/test/{sectorId}", method = { RequestMethod.GET })
+	@ResponseBody
+	public void checkTest(@PathVariable Integer sectorId,
+			HttpServletResponse response) {
+		JSONArray jsonArray = new JSONArray();
+		jsonArray.add(this.libraryService.find(sectorId).get("judge"));
+		jsonArray.add(this.libraryService.find(sectorId).get("singlesel"));
+		jsonArray.add(this.libraryService.find(sectorId).get("subjective"));
+		try {
+			response.getWriter().print(jsonArray);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * ajax异步刷新 得到章
+	 * 
+	 * @param unitId
+	 * @param response
+	 */
+	@RequestMapping(value = "tunits/{unitId}", method = { RequestMethod.GET })
+	@ResponseBody
+	public void checkChapter(@PathVariable Integer unitId,
+			HttpServletResponse response) {
+		JSONArray jsonArray = new JSONArray();
+		jsonArray.add(this.libraryService.checkChapter(unitId));
+		try {
+			response.getWriter().print(jsonArray);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * ajax实现 异步刷新 得到节
+	 * 
+	 * @param chapterId
+	 * @param response
+	 */
+	@RequestMapping(value = "tchapters/{chapterId}", method = { RequestMethod.GET })
+	@ResponseBody
+	public void checkSector(@PathVariable Integer chapterId,
+			HttpServletResponse response) {
+		JSONArray jsonArray = new JSONArray();
+		jsonArray.add(this.libraryService.checkSector(chapterId));
+		try {
+			response.getWriter().print(jsonArray);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 
+	 * @param sectorId
+	 *            单元id
+	 * @param key
+	 *            知识点
+	 * @param difficult
+	 *            难易程度
+	 * @param response
+	 *            请求返回方式
+	 * @param httpSession
+	 *            session数据
+	 * @param currentPage
+	 *            页数
+	 * @param flag
+	 *            标识是否加入试题篮
+	 *            
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "listTest/{sectorId}/{key}/{difficult}/{currentPage}", method = { RequestMethod.POST })
+	public void checkTestList(@PathVariable Integer sectorId,
+			@PathVariable String key, @PathVariable String difficult,
+			HttpServletResponse response, HttpSession httpSession,
+			@PathVariable Integer currentPage) {
+		
+		Integer count = (Integer) httpSession.getAttribute("count");//试题篮数量
+		if(count==null){
+			count=0;
+			httpSession.setAttribute("count", count);
+		}
+		List<Integer> judgeList = (List<Integer>) httpSession
+				.getAttribute("judgeId");
+		if (judgeList == null) {
+			judgeList = new ArrayList<Integer>();
+		}
+		List<Integer> singleselList = (List<Integer>) httpSession
+				.getAttribute("singleselId");
+		if (singleselList == null) {
+			singleselList = new ArrayList<Integer>();
+		}
+		List<Integer> subjectiveList = (List<Integer>) httpSession
+				.getAttribute("subjectiveId");
+		if (subjectiveList == null) {
+			subjectiveList = new ArrayList<Integer>();
+		}
+		try {
+			key = URLDecoder.decode(key, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		httpSession.getAttribute("judgeId");
+		PageInfo<Judge> pageInfo;
+		pageInfo = testPaperService.findAll(currentPage, key, 4, sectorId,
+				difficult, null);
+		for (Judge judge : pageInfo.getData()) {
+			if (judgeList.contains(judge.getId())) {
+				judge.setFlag(1);
+			}
+		}
+		PageInfo<Singlesel> pageInfo1;
+		pageInfo1 = testPaperService.findAll(currentPage, key, 5, sectorId,
+				difficult, null);
+		for (Singlesel singlesel : pageInfo1.getData()) {
+			if (singleselList.contains(singlesel.getId())) {
+				singlesel.setFlag(1);
+			}
+		}
+
+		PageInfo<Subjective> pageInfo2;
+		pageInfo2 = testPaperService.findAll(currentPage, key, 6, sectorId,
+				difficult, null);
+		for (Subjective subjective : pageInfo2.getData()) {
+			if (subjectiveList.contains(subjective.getId())) {
+				subjective.setFlag(1);
+			}
+		}
+
+		JSONArray jsonArray = new JSONArray();
+		jsonArray.add(pageInfo);
+		jsonArray.add(pageInfo1);
+		jsonArray.add(pageInfo2);
+		jsonArray.add(judgeList);
+		jsonArray.add(singleselList);
+		jsonArray.add(subjectiveList);
+		try {
+			response.getWriter().print(jsonArray);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 添加试题篮
+	 * 
+	 * @param Id
+	 *            试题Id
+	 * @param type
+	 *            标识试题类型
+	 * @param response
+	 * @param httpSession
+	 */
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@RequestMapping(value = "addSession/{Id}/{type}", method = { RequestMethod.POST })
+	public Integer addBasket(@PathVariable Integer Id, @PathVariable Integer type,
+			HttpServletResponse response, HttpSession httpSession) {
+			
+		if (type == 0) {
+			List<Integer> judgeList = (List<Integer>) httpSession
+					.getAttribute("judgeId");
+			if (judgeList == null) {
+				judgeList = new ArrayList<Integer>();
+			}
+			judgeList.add(Id);
+			httpSession.setAttribute("judgeId", judgeList);
+		}
+		if (type == 1) {
+			List<Integer> singleselList = (List<Integer>) httpSession
+					.getAttribute("singleselId");
+			if (singleselList == null) {
+				singleselList = new ArrayList<Integer>();
+			}
+			singleselList.add(Id);
+			httpSession.setAttribute("singleselId", singleselList);
+		}
+		if (type == 2) {
+			List<Integer> subjectiveList = (List<Integer>) httpSession
+					.getAttribute("subjectiveId");
+			if (subjectiveList == null) {
+				subjectiveList = new ArrayList<Integer>();
+			}
+			subjectiveList.add(Id);
+			httpSession.setAttribute("subjectiveId", subjectiveList);
+		}
+		Integer count = (Integer) httpSession.getAttribute("count");
+		count++;
+		httpSession.setAttribute("count", count);
+		return count;
+	}
+
+	/**
+	 * 移除试题篮
+	 * 
+	 * @param Id
+	 * @param type
+	 * @param response
+	 * @param httpSession
+	 */
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@RequestMapping(value = "removeSession/{Id}/{type}", method = { RequestMethod.POST })
+	public Integer removeBasket(@PathVariable Integer Id,
+			@PathVariable Integer type,
+			HttpSession httpSession) {
+		if (type == 0) {
+			List<Integer> judgeList = (List<Integer>) httpSession
+					.getAttribute("judgeId");
+			judgeList.remove(Id);
+			httpSession.setAttribute("judgeId", judgeList);
+		}
+		if (type == 1) {
+			List<Integer> singleselList = (List<Integer>) httpSession
+					.getAttribute("singleselId");
+			singleselList.remove(Id);
+			httpSession.setAttribute("singleselId", singleselList);
+		}
+		if (type == 2) {
+			List<Integer> subjectiveList = (List<Integer>) httpSession
+					.getAttribute("subjectiveId");
+			subjectiveList.remove(Id);
+			httpSession.setAttribute("subjectiveId", subjectiveList);
+		}
+		Integer count = (Integer) httpSession.getAttribute("count");
+		count--;
+		httpSession.setAttribute("count", count);
+		return count;
+	}
+	/**
+	 * 访问试题篮页面
+	 * @param httpSession
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/basket", method = { RequestMethod.GET })
+	public ModelAndView removeBasket(HttpSession httpSession) {
+		ModelAndView mav = new ModelAndView();
+		List<Integer> judList = (List<Integer>) httpSession.getAttribute("judgeId");
+		List<Integer> sinList = (List<Integer>) httpSession.getAttribute("singleselId");
+		List<Integer> subList = (List<Integer>) httpSession.getAttribute("subjectiveId");
+		if (judList == null) {
+			judList = new ArrayList<Integer>();
+		}
+		if (sinList == null) {
+			sinList = new ArrayList<Integer>();
+		}
+		if (subList == null) {
+			subList = new ArrayList<Integer>();
+		}
+		List<Judge> judge = new ArrayList<Judge>();
+		for (Integer judId : judList) {
+			judge.add(libraryService.getByJudgeId(judId));
+		}
+		List<Singlesel> singlesel = new ArrayList<Singlesel>();
+		for (Integer sinId : sinList) {
+			singlesel.add(libraryService.getBySingleId(sinId));
+		}
+		List<Subjective> subjective = new ArrayList<Subjective>();
+		for (Integer subId : subList) {
+			subjective.add(libraryService.getBySubjecId(subId));
+		}
+		mav.addObject("judge", judge);
+		mav.addObject("singlesel", singlesel);
+		mav.addObject("subjective", subjective);
+		mav.setViewName("basket");
+		return mav;
+	}
+	/**
+	 * 试题篮页面实现删除试题
+	 * @param Id
+	 * @param type
+	 * @param httpSession
+	 * @return
+	 */
+	@RequestMapping(value = "basket/{Id}/{type}", method = { RequestMethod.GET })
+	public ModelAndView basket(@PathVariable Integer Id,@PathVariable Integer type,
+			HttpSession httpSession) {
+		removeBasket(Id,type,httpSession);
+		return removeBasket(httpSession);
+		
+	}
+	
+	@RequestMapping(value = "createTest", method = { RequestMethod.GET })
+	public ModelAndView createTest(HttpSession httpSession) {
+		ModelAndView mav = new ModelAndView();
+		
+		
+		
+		
+		
+		return mav;
+		
+	}
+	
+	
+}

@@ -1,0 +1,119 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<HTML>
+<HEAD>
+<TITLE>试题库</TITLE>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<base href="${pageContext.request.contextPath }/">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/theme.css" rel="stylesheet">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<script src="js/jquery-1.10.2.min.js"></script>
+<style type="text/css">
+.test {
+	width: 120px;
+	text-align: left;
+}
+
+.tid,.tdo {
+	width: 50px;
+}
+
+.name {
+	width: 450px;
+}
+
+.tdo {
+	
+}
+
+.main {
+	margin-top: 10px;
+}
+
+.container {
+	padding-right: 0px;
+	padding-left: 0px;
+	margin-right: auto;
+	margin-left: auto;
+	width: 1960px;
+}
+
+td {
+	vertical-align: top;
+}
+
+body,div {
+	padding-left: 10px;
+}
+</style>
+<SCRIPT type="text/javascript">
+	function chapter(unitId) {
+		location.href = "front/library/" + unitId + "";
+	}
+	function sector(unitId, chapterId) {
+		location.href = "front/library/" + unitId + "/" + chapterId + "";
+	}
+	function show1(sectorId) {
+		$('#main').show();
+		location.href = "front/all/" + sectorId + "";
+	}
+</SCRIPT>
+</HEAD>
+<BODY>
+	<jsp:include page="menu.jsp" />
+
+	<div class="container">
+		<div class="row-fluid">
+			<div class="span3" id="left-side">
+				<h1 class="logo">试题库</h1>
+				<div>
+					<ul>
+						<c:forEach var="item" items="${units}">
+							<li>${item.unitName }
+								<ul>
+									<li>123</li>
+								</ul>
+							</li>
+						</c:forEach>
+					</ul>
+				</div>
+			</div>
+			<div class="span9" id="main">
+				<!-- Button trigger modal -->
+				<button type="button" class="btn btn-primary btn-lg"
+					data-toggle="modal" data-target="#myModal">[自动组卷]</button>
+				
+				<!-- Modal -->
+				<div class="modal fade" id="myModal" tabindex="-1">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+							</div>
+							<div class="modal-body">
+								<input type="text">
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">Close</button>
+								<button type="button" class="btn btn-primary">Save
+									changes</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</BODY>
+</HTML>

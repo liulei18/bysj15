@@ -1,0 +1,9 @@
+package com.edu.zzti.ass.onlinestudy.service;
+
+import com.edu.zzti.ass.onlinestudy.model.TestPaper;
+
+public interface IPaperService {
+
+	public TestPaper getPaper(Integer id);
+
+}

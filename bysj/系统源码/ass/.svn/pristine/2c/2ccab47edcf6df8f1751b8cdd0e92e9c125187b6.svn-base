@@ -1,0 +1,106 @@
+package com.edu.zzti.ass.testlibrary.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.edu.zzti.ass.testlibrary.model.Judge;
+import com.edu.zzti.ass.testlibrary.model.Singlesel;
+import com.edu.zzti.ass.testlibrary.model.Subjective;
+import com.edu.zzti.ass.testlibrary.model.TJudge;
+import com.edu.zzti.ass.testlibrary.service.ILibraryService;
+import com.edu.zzti.ass.testlibrary.service.ITestPaperService;
+
+@Controller
+@RequestMapping("/testPaper")
+public class TestpaperController {
+	@Autowired
+	private ITestPaperService testPaperService;
+	@Autowired
+	private ILibraryService libraryService;
+
+	/**
+	 * 访问addTestpaper页面 添加属性
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/test", method = { RequestMethod.GET })
+	public ModelAndView testPaper(Model model) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("test");
+		return mav;
+	}
+
+	@RequestMapping(value = "/test1", method = { RequestMethod.GET })
+	public ModelAndView test1() {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("test1");
+		return mav;
+	}
+	@RequestMapping(value = "/test3", method = { RequestMethod.GET })
+	public void test2(HttpServletResponse response) {
+		response.setHeader("Content-disposition","attachment; filename=exdata.doc");
+		
+	}
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/test2", method = { RequestMethod.GET })
+	public ModelAndView removeBasket(HttpSession httpSession) {
+		ModelAndView mav = new ModelAndView();
+		List<Integer> judList = (List<Integer>) httpSession.getAttribute("judgeId");
+		List<Integer> sinList = (List<Integer>) httpSession.getAttribute("singleselId");
+		List<Integer> subList = (List<Integer>) httpSession.getAttribute("subjectiveId");
+		if (judList == null) {
+			judList = new ArrayList<Integer>();
+		}
+		if (sinList == null) {
+			sinList = new ArrayList<Integer>();
+		}
+		if (subList == null) {
+			subList = new ArrayList<Integer>();
+		}
+		List<Judge> judge = new ArrayList<Judge>();
+		for (Integer judId : judList) {
+			judge.add(libraryService.getByJudgeId(judId));
+		}
+		List<Singlesel> singlesel = new ArrayList<Singlesel>();
+		for (Integer sinId : sinList) {
+			singlesel.add(libraryService.getBySingleId(sinId));
+		}
+		List<Subjective> subjective = new ArrayList<Subjective>();
+		for (Integer subId : subList) {
+			subjective.add(libraryService.getBySubjecId(subId));
+		}
+		mav.addObject("judge", judge);
+		mav.addObject("singlesel", singlesel);
+		mav.addObject("subjective", subjective);
+		mav.setViewName("test2");
+		return mav;
+	}
+
+	
+
+	/**
+	 * 进行登录界面的post请求操作！
+	 * 
+	 * @param teacher
+	 * @return
+	 */
+	@RequestMapping(value = "addTestpaper", method = { RequestMethod.POST })
+	public ModelAndView findAllJudge(TJudge judge) {
+		ModelAndView mav = new ModelAndView();
+		testPaperService.addTjudge(judge);
+		mav.setViewName("index");
+		return mav;
+	}
+
+}

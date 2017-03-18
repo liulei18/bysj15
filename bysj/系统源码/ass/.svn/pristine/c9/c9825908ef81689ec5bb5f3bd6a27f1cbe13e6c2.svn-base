@@ -1,0 +1,61 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1"> 
+		<title>隐藏侧边栏导航菜单效果 - Side Slide</title>
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/side.css" />
+		
+		<link rel="stylesheet" type="text/css" href="css/menu_sideslide.css" />
+		
+	</head>
+	<body>
+		<div class="container">
+			<div class="menu-wrap">
+				<nav class="menu">
+					<div class="icon-list">
+						<a href="<%=path%>/index"><i class="fa fa-fw fa-star-o"></i><span>首页</span></a>
+						<a href="<%=path%>/learning"><i class="fa fa-fw fa-bell-o"></i><span>在线学习</span></a>
+						<a href="<%=path%>/class"><i class="fa fa-fw fa-envelope-o"></i><span>课堂练习</span></a>
+						<a href="<%=path%>/library"><i class="fa fa-fw fa-comment-o"></i><span>试题库</span></a>
+						<a href="#"><i class="fa fa-fw fa-bar-chart-o"></i><span>关于</span></a>
+					</div>
+				</nav>
+				<button class="close-button" id="close-button">Close Menu</button>
+			</div>
+			<button class="menu-button" id="open-button">Open Menu</button>
+			<div class="content-wrap">
+				<div class="content">
+					<header class="codrops-header">
+						<h1>软件工程双语课程<span>software engineering</span></h1>
+						<nav class="codrops-demos">
+							<a href="<%=path%>/first">第一章</a>
+							<a class="current-demo" href="sideslide.html">第二章</a>
+							<a href="cornerbox.html">第三章</a>
+							<a href="cornerbox_nested.html">第四章</a>
+							<a href="topexpand.html">第五章</a>
+							<a href="cornermorph.html">第六章</a>
+							<a href="elastic.html">第七章</a>
+							<a href="bubble.html">第八章</a>
+							<a href="wave.html">第九章</a>
+						</nav>
+					</header>
+					<!-- Related demos -->
+				</div>
+			</div><!-- /content-wrap -->
+		</div><!-- /container -->
+		<script src="js/classie.js"></script>
+		<script src="js/main.js"></script>
+	</body>
+</html>

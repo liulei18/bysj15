@@ -1,0 +1,127 @@
+package com.edu.zzti.ass.testlibrary.controller;
+
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.edu.zzti.ass.core.model.PageInfo;
+import com.edu.zzti.ass.server.model.Lexicon;
+import com.edu.zzti.ass.testlibrary.model.Judge;
+import com.edu.zzti.ass.testlibrary.model.TJudge;
+import com.edu.zzti.ass.testlibrary.service.ITestPaperService;
+
+@Controller
+@RequestMapping("/manage/tJudge")
+public class TJudgeController {
+	@Autowired
+	private ITestPaperService testPaperService;
+	    
+	/**
+	 * 访问判断题临时表页面
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/listTJudgeTemp", method = { RequestMethod.GET })
+	public ModelAndView listTjudge() {
+		ModelAndView mav = new ModelAndView();
+		PageInfo<TJudge> pageInfo;
+		pageInfo = testPaperService.findAll(1, null, 1,null);
+		mav.addObject("pageInfo", pageInfo);
+		mav.setViewName("manage/listTJudgeTemp");
+		return mav;
+	}
+	
+	@RequestMapping(value = "listTJudgeTemp/{currentPage}", method = { RequestMethod.GET })
+	public ModelAndView getAll(@PathVariable Integer currentPage) {
+		ModelAndView mav = new ModelAndView();
+		if (currentPage.equals("")) {
+			currentPage = 1;
+		} 
+		PageInfo<TJudge> pageInfo;
+
+		pageInfo = testPaperService.findAll(currentPage, null, 1,null);
+		
+		mav.addObject("pageInfo", pageInfo);
+		mav.setViewName("manage/listTJudgeTemp");
+		return mav;
+	}
+	
+	@RequestMapping(value = "listJudgeCheck/{currentPage}/{jkey}", method = { RequestMethod.GET })
+	public ModelAndView getAllJudge(@PathVariable Integer currentPage,@PathVariable String jkey) {
+		ModelAndView mav = new ModelAndView();
+		/**
+		 * 对jkey进行解码
+		 */
+		try {
+			jkey = URLDecoder.decode(jkey, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		if (currentPage.equals("")) {
+			currentPage = 1;
+		} 
+		PageInfo<Judge> pageInfo;
+
+		pageInfo = testPaperService.findAll(currentPage, jkey, 4,null);
+		
+		mav.addObject("pageInfo", pageInfo);
+		mav.setViewName("manage/judgeCheck");
+		return mav;
+	}
+	/**
+	 * 访问相似判断题型的页面
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "judgeCheck/{id}/{jkey}", method = { RequestMethod.GET })
+	public ModelAndView check(@PathVariable Integer id,@PathVariable String jkey) {
+		ModelAndView mav = new ModelAndView();
+		/**
+		 * 对jkey进行解码
+		 */
+		try {
+			jkey = URLDecoder.decode(jkey, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		TJudge tJudge = testPaperService.getByIdTJudge(id);
+		mav.addObject("id",id);
+		mav.addObject("jkey", jkey);
+		mav.addObject("tJudge", tJudge);
+		PageInfo<Judge> pageInfo;
+		pageInfo = testPaperService.findAll(1, jkey, 4,null);
+		mav.addObject("pageInfo", pageInfo);
+		mav.setViewName("manage/judgeCheck");
+		return mav;
+	}
+	
+	@RequestMapping(value = "judgeCheck/{id}", method = { RequestMethod.GET })
+	public ModelAndView delete(@PathVariable Integer id) {
+		testPaperService.deleteTJudge(id);
+		return listTjudge();
+	}
+	
+	@RequestMapping(value = "insertJudge/{id}", method = { RequestMethod.GET })
+	public ModelAndView insertJudge(@PathVariable Integer id) {
+		TJudge tJudge = testPaperService.getByIdTJudge(id);		
+		testPaperService.deleteTJudge(id);
+		Judge judge = new Judge();
+		judge.setQuestion(tJudge.getQuestion());
+		judge.setAnswer(tJudge.getAnswer());
+		judge.setJkey1(tJudge.getJkey1());
+		judge.settSector(tJudge.gettSector());
+		testPaperService.addJudge(judge);
+		return listTjudge();
+	}
+
+}

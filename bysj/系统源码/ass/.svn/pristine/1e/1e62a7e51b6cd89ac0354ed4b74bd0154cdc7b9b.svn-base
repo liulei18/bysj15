@@ -1,0 +1,9 @@
+package com.edu.zzti.ass.management.dao;
+
+import com.edu.zzti.ass.core.dao.IBaseDao;
+import com.edu.zzti.ass.management.model.TClass;
+
+public interface IClassDao extends IBaseDao<TClass>{
+
+	public  TClass getByName(String name);
+}

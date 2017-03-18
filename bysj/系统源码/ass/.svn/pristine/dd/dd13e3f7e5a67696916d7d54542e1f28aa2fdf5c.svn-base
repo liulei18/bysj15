@@ -1,0 +1,213 @@
+package com.edu.zzti.ass.testlibrary.controller;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.alibaba.fastjson.JSONArray;
+import com.edu.zzti.ass.core.model.PageInfo;
+import com.edu.zzti.ass.testlibrary.model.Judge;
+import com.edu.zzti.ass.testlibrary.model.Singlesel;
+import com.edu.zzti.ass.testlibrary.model.Subjective;
+import com.edu.zzti.ass.testlibrary.model.TChapter;
+import com.edu.zzti.ass.testlibrary.model.TJudge;
+import com.edu.zzti.ass.testlibrary.model.TSector;
+import com.edu.zzti.ass.testlibrary.model.TUnit;
+import com.edu.zzti.ass.testlibrary.service.ILibraryService;
+import com.edu.zzti.ass.testlibrary.service.ITestPaperService;
+
+@Controller
+@RequestMapping("/front")
+public class LibraryController {
+	@Autowired
+	private ITestPaperService testPaperService;
+	@Autowired
+	private ILibraryService libraryService;
+
+	/**
+	 * 访问addTjudge页面 添加属性
+	 * 
+	 * @param model
+	 * @return
+	 */
+
+
+	@RequestMapping(value = "/test", method = { RequestMethod.GET })
+	public ModelAndView addTJudge(Model model) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("test");
+		return mav;
+	}
+
+	@RequestMapping(value = "/library", method = { RequestMethod.GET })
+	public ModelAndView library(Model model) {
+		ModelAndView mav = new ModelAndView();
+		List<TUnit> units = testPaperService.find().get("unit");
+		mav.addObject("units", units);
+		mav.setViewName("library");
+		return mav;
+	}
+	/**
+	 * 
+	 * @param 访问人工组卷页面
+	 * @return
+	 */
+	@RequestMapping(value = "/library1", method = { RequestMethod.GET })
+	public ModelAndView library1(Model model) {
+		ModelAndView mav = new ModelAndView();
+		List<TUnit> units = testPaperService.find().get("unit");
+		mav.addObject("units", units);
+		mav.setViewName("library1");
+		return mav;
+	}
+/**
+ * 获取单元列表
+ * @param unitId
+ * @return
+ */
+	@RequestMapping(value = "/library/{unitId}", method = { RequestMethod.GET })
+	public ModelAndView checkChapter(@PathVariable Integer unitId) {
+		ModelAndView mav = new ModelAndView();
+		List<TUnit> units = testPaperService.find().get("unit");
+		List<TChapter> chapters = libraryService.checkChapter(unitId);
+		mav.addObject("units", units);
+		mav.addObject("chapters", chapters);
+		mav.setViewName("library");
+		return mav;
+	}
+	/**
+	 * 刷新整个页面 得到 章
+	 * @param unitId
+	 * @param chapterId
+	 * @return
+	 */
+	@RequestMapping(value = "/library/{unitId}/{chapterId}", method = { RequestMethod.GET })
+	public ModelAndView checkSector(@PathVariable Integer unitId,
+			@PathVariable Integer chapterId) {
+		ModelAndView mav = new ModelAndView();
+		List<TUnit> units = testPaperService.find().get("unit");
+		List<TChapter> chapters = libraryService.checkChapter(unitId);
+		List<TSector> sectors = libraryService.checkSector(chapterId);
+		mav.addObject("units", units);
+		mav.addObject("chapters", chapters);
+		mav.addObject("sectors", sectors);
+		mav.setViewName("library");
+		return mav;
+	}
+	/**
+	 * 单独的 试题列表页面
+	 * @param sectorId
+	 * @return
+	 */
+	@RequestMapping(value = "/all/{sectorId}", method = { RequestMethod.GET })
+	public ModelAndView checkSector(@PathVariable Integer sectorId) {
+		ModelAndView mav = new ModelAndView();
+		PageInfo<Judge> pageInfo;
+		pageInfo = testPaperService.findAll(1, null, 4,sectorId,null,null);
+		mav.addObject("pageInfo", pageInfo);
+		PageInfo<Singlesel> pageInfo1;
+		pageInfo1 = testPaperService.findAll(1, null, 5,sectorId,null,null);
+		mav.addObject("pageInfo1", pageInfo1);
+		PageInfo<Subjective> pageInfo2;
+		pageInfo2 = testPaperService.findAll(1, null, 6,sectorId,null,null);
+		mav.addObject("pageInfo2", pageInfo2);
+		mav.setViewName("listPageTest");
+		return mav;
+	}
+	/**
+	 * 所有试题展示页面 ajax 实现遍历  暂时没用到
+	 * @param sectorId
+	 * @param response
+	 */
+	@RequestMapping(value = "/test/{sectorId}", method = { RequestMethod.GET })
+	@ResponseBody
+	public void checkTest(@PathVariable Integer sectorId,
+			HttpServletResponse response) {
+		JSONArray jsonArray = new JSONArray();
+		jsonArray.add( this.libraryService.find(sectorId).get("judge"));
+		jsonArray.add(this.libraryService.find(sectorId).get("singlesel"));
+		jsonArray.add(this.libraryService.find(sectorId).get("subjective"));
+		System.out.println(jsonArray);
+		try {
+			response.getWriter().print(jsonArray);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * ajax异步刷新 得到章
+	 * @param unitId
+	 * @param response
+	 */
+	@RequestMapping(value = "tunits/{unitId}", method = { RequestMethod.GET })
+	@ResponseBody
+	public void checkChapter(@PathVariable Integer unitId,
+			HttpServletResponse response) {
+		JSONArray jsonArray = new JSONArray();
+		jsonArray.add( this.libraryService.checkChapter(unitId));
+		System.out.println(jsonArray);
+		try {
+			response.getWriter().print(jsonArray);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * ajax实现 异步刷新  得到节
+	 * @param chapterId
+	 * @param response
+	 */
+	@RequestMapping(value = "tchapters/{chapterId}", method = { RequestMethod.GET })
+	@ResponseBody
+	public void checkSector(@PathVariable Integer chapterId,
+			HttpServletResponse response) {
+		JSONArray jsonArray = new JSONArray();
+		jsonArray.add( this.libraryService.checkSector(chapterId));
+		System.out.println(jsonArray);
+		try {
+			response.getWriter().print(jsonArray);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@RequestMapping(value = "listTest/{sectorId}/{key}/{difficult}", method = { RequestMethod.POST })
+	public void checkTestList(@PathVariable Integer sectorId,@PathVariable String key,@PathVariable String difficult,
+			HttpServletResponse response,HttpServletRequest request) {		
+	try {
+			key = URLDecoder.decode(key, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		System.out.println(key);
+		PageInfo<Judge> pageInfo;
+		pageInfo = testPaperService.findAll(1, key, 4,sectorId,difficult,null);
+		PageInfo<Singlesel> pageInfo1;
+		pageInfo1 = testPaperService.findAll(1, key, 5,sectorId,difficult,null);
+		PageInfo<Subjective> pageInfo2;
+		pageInfo2 = testPaperService.findAll(1, key, 6,sectorId,difficult,null);
+		JSONArray jsonArray = new JSONArray();
+		jsonArray.add(pageInfo);
+		jsonArray.add(pageInfo1);
+		jsonArray.add(pageInfo2);
+		System.out.println(jsonArray);
+		try {
+			response.getWriter().print(jsonArray);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}

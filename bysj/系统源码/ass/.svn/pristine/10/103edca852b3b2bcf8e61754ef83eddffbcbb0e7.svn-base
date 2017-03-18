@@ -1,0 +1,61 @@
+package com.edu.zzti.ass.onlinestudy.controller;
+
+
+
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.edu.zzti.ass.management.model.TStudent;
+import com.edu.zzti.ass.onlinestudy.model.TestPaper;
+import com.edu.zzti.ass.onlinestudy.service.ILearningService;
+import com.edu.zzti.ass.onlinestudy.service.IOnlineStudyService;
+import com.edu.zzti.ass.testlibrary.model.TUnit;
+import com.edu.zzti.ass.testlibrary.service.ITestPaperService;
+
+@Controller
+@RequestMapping("/onlineStudy")
+public class OnlinStudyController {
+	@Autowired
+	private IOnlineStudyService onlineStudyService;
+	@Autowired
+	private ITestPaperService testPaperService;
+	@Autowired
+	private ILearningService learningService;
+	    
+	/**
+	 * 随堂列表页
+	 * @return
+	 */
+	@RequestMapping(value = "class", method = { RequestMethod.GET })
+	public ModelAndView  cl() {
+		ModelAndView mav= new ModelAndView();
+		List<TUnit> units =learningService.getAllUnits();
+		mav.addObject("units", units);
+		mav.setViewName("class");
+		return mav;
+	}
+	
+	@RequestMapping(value = "class/{unitId}", method = { RequestMethod.GET })
+	public ModelAndView  praList(@PathVariable Integer unitId,HttpSession session) {
+		ModelAndView mav= new ModelAndView();
+		TUnit unit =learningService.getunit(unitId);
+		TStudent student = (TStudent) session.getAttribute("student");
+		String teacherId =	 onlineStudyService.getTeacherId(student.getId());
+		List<TestPaper> papers= onlineStudyService.getPaperByUnit(teacherId,unitId);
+		List<TUnit> units =learningService.getAllUnits();
+		mav.addObject("units", units);
+		mav.addObject("papers", papers);
+		mav.addObject("unit", unit);
+		mav.setViewName("class");
+		return mav;
+	}
+
+}

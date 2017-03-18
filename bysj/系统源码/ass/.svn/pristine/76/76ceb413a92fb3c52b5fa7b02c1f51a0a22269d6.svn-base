@@ -1,0 +1,57 @@
+package com.edu.zzti.ass.testlibrary.controller;
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.edu.zzti.ass.testlibrary.model.TJudge;
+import com.edu.zzti.ass.testlibrary.model.TSinglesel;
+import com.edu.zzti.ass.testlibrary.model.TSubjective;
+import com.edu.zzti.ass.testlibrary.service.ITestPaperService;
+
+@Controller
+@RequestMapping("/manage/test")
+public class TestpaperController {
+	@Autowired
+	private ITestPaperService testPaperService;
+
+	/**
+	 * 访问addTestpaper页面 添加属性
+	 * @param model
+	 * @return
+	 */
+	  @RequestMapping(value="/addTestpaper", method = {RequestMethod.GET})
+	    public ModelAndView testPaper(Model model){
+	        model.addAttribute("judge", new TJudge());
+	        model.addAttribute("singlesel", new TSinglesel());
+	        model.addAttribute("subjective", new TSubjective());
+			ModelAndView mav = new ModelAndView();
+			mav.addObject("unit", this.testPaperService.find().get("unit"));
+			mav.setViewName("addTestpaper");
+	        return mav;
+	    }
+	  
+	
+	/**
+	 * 进行登录界面的post请求操作！
+	 * @param teacher
+	 * @return
+	 */
+	@RequestMapping(value="addTestpaper", method = {RequestMethod.POST})
+	public ModelAndView findAllJudge(TJudge judge){
+		 ModelAndView mav = new ModelAndView();
+		 testPaperService.addTjudge(judge);
+		 
+		 mav.setViewName("index");
+		 
+		return mav;
+	  }
+
+   
+	
+}

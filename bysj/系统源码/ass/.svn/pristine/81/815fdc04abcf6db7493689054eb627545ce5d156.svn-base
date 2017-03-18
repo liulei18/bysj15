@@ -1,0 +1,20 @@
+package com.edu.zzti.ass.server.service;
+
+import java.util.List;
+
+import com.edu.zzti.ass.server.model.PracticePaper;
+import com.edu.zzti.ass.server.model.Unit;
+
+public interface IPracticeService {
+
+	public List<Unit> getUnits();
+
+	public PracticePaper addPra(String praName, Integer praDx, Integer praPd,
+			Integer praJd, String praCutTime, String teacherId, Integer unitId,
+			List<Integer> chapterIdList);
+	
+	public PracticePaper getPaper(Integer id);
+
+	public int deal(Integer id, Integer type);
+	
+}

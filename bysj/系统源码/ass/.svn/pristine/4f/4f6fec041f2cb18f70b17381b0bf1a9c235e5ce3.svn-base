@@ -1,0 +1,65 @@
+package com.edu.zzti.ass.testlibrary.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.edu.zzti.ass.onlinestudy.dao.IOnlineStudyDao;
+import com.edu.zzti.ass.testlibrary.dao.IJudgeDao;
+import com.edu.zzti.ass.testlibrary.dao.ISingleselDao;
+import com.edu.zzti.ass.testlibrary.dao.ISubjectiveDao;
+import com.edu.zzti.ass.testlibrary.dao.ITChapterDao;
+import com.edu.zzti.ass.testlibrary.dao.ITSectorDao;
+import com.edu.zzti.ass.testlibrary.dao.ITunitDao;
+import com.edu.zzti.ass.testlibrary.model.TChapter;
+import com.edu.zzti.ass.testlibrary.model.TSector;
+import com.edu.zzti.ass.testlibrary.service.ILibraryService;
+
+@Service("libraryService")
+public class LibraryServiceImpl implements ILibraryService {
+
+	@Autowired
+	private IJudgeDao judgeDao;
+	@Autowired
+	private ISingleselDao singleselDao;
+	@Autowired
+	private ISubjectiveDao subjectiveDao;
+	@Autowired
+	private ITChapterDao chapterDao;
+	@Autowired
+	private ITSectorDao sectorDao;
+
+
+	@Override
+	public Map<String, List> find(Integer sectorId) {
+		Map<String, List> map = new HashMap<String, List>();
+		map.put("judge", judgeDao.getJudgeBySecId(sectorId));
+		map.put("singlesel", singleselDao.getSingleselBySecId(sectorId));
+		map.put("subjective", subjectiveDao.getSubjectiveBySecId(sectorId));
+		return map;
+	}
+
+	@Override
+	public List<TChapter> checkChapter(Integer unitId) {
+		return chapterDao.getChapters(unitId);
+	}
+
+	@Override
+	public List<TSector> checkSector(Integer chapterId) {
+
+		return sectorDao.getSectors(chapterId);
+	}
+
+	@Override
+	public Map<String, List> all(Integer sectorId) {
+		Map<String, List> map = new HashMap<String, List>();
+		map.put("judge", judgeDao.getBySecId(sectorId));
+		map.put("singlesel", singleselDao.getBySecId(sectorId));
+		map.put("subjective", subjectiveDao.getBySecId(sectorId));
+		return map;
+	}
+
+}

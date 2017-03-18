@@ -1,0 +1,58 @@
+package com.edu.zzti.ass.testlibrary.controller;
+
+import java.util.HashMap;
+import java.util.Map;/*
+import org.apache.commons.collections.map.HashedMap;*/
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+public class JsonUtils {
+
+	/**
+	 * 封装json，将list跟页码信息pager一起传到前台处理,json格式为：
+	 * {"list":[{"adminEmail":"zhaojw_420@163.com","adminId":"8a8080ee4c97e046014c97e06c640000","adminName":"赵健伟","adminPwd":"leOlwUuh0ds=","created":"2015-03-31","isAdm":"Y","status":1,"type":1,"updated":"2015-04-08"}],"page":[{"totalPage":1,"totalNum":1,"currentPage":1}]}
+	 * 前台取list值为data.list[i].adminName;取pager信息为data.page.totalCount
+	 * @author zhaojw
+	 * @param list 传过来的JSONArray
+	 * @param initPage 当前页-1
+	 * @param pageRow 每页显示数据个数
+	 * @param totalCount 总数据量
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static JSONObject buildJson(JSONArray list){
+		/*//JSONArray list=JSONArray.fromObject(objects);
+		Map<String, Integer> totals=new HashedMap();
+		totals.put("totalNum", totalCount);//总数
+		totals.put("currentPage", initPage);//当前页
+		int totalPage;
+		if(totalCount%pageRow==0){
+			totalPage=totalCount/pageRow;
+		}else{
+			totalPage=Math.round(totalCount/pageRow)+1;
+		}
+		totals.put("totalPage",totalPage );//总页数
+		JSONArray total=JSONArray.fromObject(totals);*/
+		JSONObject jo=new JSONObject();
+		jo.put("list", list);/*
+		jo.put("page", total);*/
+		return jo;
+		
+	}
+	/**
+	 * 封装验证信息；
+	 * 取值为：data.msg
+	 * @author zhaojw
+	 * @param message 验证信息
+	 * @return
+	 */
+	/*@SuppressWarnings("unchecked")
+	public static JSONArray buildMessage(String message){
+		Map<String, String> map=new HashMap();
+		map.put("msg", message);
+		//String map="[{\"msg\":\""+message+"\"}]";
+		JSONArray msg=JSONArray.fromObject(map);
+		return msg;
+		
+	}*/
+}

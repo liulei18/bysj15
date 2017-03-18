@@ -1,0 +1,62 @@
+package com.edu.zzti.ass.testlibrary.dao.impl;
+
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.List;
+
+import org.hibernate.SQLQuery;
+import org.springframework.stereotype.Repository;
+
+import com.edu.zzti.ass.core.dao.impl.BaseDaoImpl;
+import com.edu.zzti.ass.testlibrary.dao.ISingleselDao;
+import com.edu.zzti.ass.testlibrary.dao.ITSingleselDao;
+import com.edu.zzti.ass.testlibrary.model.Judge;
+import com.edu.zzti.ass.testlibrary.model.Singlesel;
+import com.edu.zzti.ass.testlibrary.model.TSinglesel;
+
+@Repository("singleselDao")
+public class SingleselDaoImpl extends BaseDaoImpl  implements ISingleselDao {
+
+	@Override
+	public Serializable addSinglesel(Singlesel singlesel) {
+		
+		return super.save(singlesel);
+		
+	}
+
+	@Override
+	public List<Singlesel> findAllSingle() {
+		String hql ="from TSinglesel";
+		return super.find(hql);
+	}
+
+	@Override
+	public Long countSinglesel(String key) {
+		String sql = "SELECT count(*) FROM t_singlesel as s ";
+		if (key != null) {
+			sql = sql + "where s.skey1 like '" + key + "%'";
+		}
+		SQLQuery q = getCurrentSession().createSQLQuery(sql);
+		return ((BigInteger) q.uniqueResult()).longValue();
+	}
+
+	@Override
+	public List<Singlesel> getListByPage(int currentPage, String key) {
+		System.out.println("-------------------single----------------------");
+		if (key == null) {
+			return this.find("from Singlesel", currentPage, 10);
+		} else {
+			return this.find("from Singlesel as s where s.skey1 like '" + key + "%'", currentPage, 10);
+		}
+	}
+
+	@Override
+	public List<Singlesel> getSingleselBySecId(Integer sectorId) {
+		String sql = "SELECT *FROM t_singlesel where sectorId = '"+sectorId+"' order by id  desc limit 5";
+		
+		 List<Singlesel> list= this.findBySql(sql);
+		 return list;
+	}
+
+	
+}

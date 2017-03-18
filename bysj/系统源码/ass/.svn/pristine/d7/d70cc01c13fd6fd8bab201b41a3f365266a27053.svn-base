@@ -1,0 +1,22 @@
+package com.edu.zzti.ass.management.dao.impl;
+
+import org.springframework.stereotype.Repository;
+
+import com.edu.zzti.ass.core.dao.impl.BaseDaoImpl;
+import com.edu.zzti.ass.management.dao.IClassDao;
+import com.edu.zzti.ass.management.model.TClass;
+
+
+
+@Repository("classDao")
+public class ClassDaoImpl extends BaseDaoImpl<TClass> implements IClassDao{
+
+	@Override
+	public TClass getByName(String name) {
+		
+		return this.getByHql("from TClass a where a.name ='"+name+"'");
+	}
+
+
+	
+}

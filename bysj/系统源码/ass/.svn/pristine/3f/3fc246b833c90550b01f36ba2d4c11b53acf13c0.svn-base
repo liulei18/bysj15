@@ -1,0 +1,48 @@
+package com.edu.zzti.ass.server.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.edu.zzti.ass.server.model.Chapter;
+import com.edu.zzti.ass.server.model.Unit;
+import com.edu.zzti.ass.server.service.IPracticeService;
+import com.edu.zzti.ass.testlibrary.dao.ITunitDao;
+import com.edu.zzti.ass.testlibrary.model.TChapter;
+import com.edu.zzti.ass.testlibrary.model.TUnit;
+
+@Service("practiceService")
+public class PracticeServiceImpl implements IPracticeService{
+
+	@Autowired
+	private ITunitDao unitDao;
+	
+	@Override
+	public List<Unit> getUnits() {
+		List<TUnit> list = unitDao.findAllUnit();
+		List<Unit> units  = new ArrayList<Unit>();
+		for(TUnit tUnit :list){
+			Unit unit = new Unit();
+			unit.setId(tUnit.getId());
+			unit.setUnitName(tUnit.getUnitName());
+			Set<Chapter> chapters = new HashSet<Chapter>();
+			Iterator<TChapter> iterator =  tUnit.gettChapters().iterator();
+			while(iterator.hasNext()){
+				TChapter temp  =(TChapter)iterator.next();
+				Chapter chapter = new Chapter();
+				chapter.setId(temp.getId());
+				chapter.setChaName(temp.getChaName());
+				chapters.add(chapter);
+			}
+			unit.setChapters(chapters);
+			units.add(unit);
+		}
+		return units;
+	}
+
+}

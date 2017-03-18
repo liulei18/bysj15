@@ -1,0 +1,174 @@
+package com.edu.zzti.ass.management.model;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.edu.zzti.ass.testlibrary.model.TJudge;
+import com.edu.zzti.ass.testlibrary.model.TSinglesel;
+import com.edu.zzti.ass.testlibrary.model.TSubjective;
+
+/**
+ * TStudent entity. 
+ */
+@Entity
+@Table(name = "t_student", catalog = "ass")
+public class TStudent implements java.io.Serializable {
+
+
+
+	
+	
+	private String id;
+	private TClass TClass;
+	private String pwd;
+	private String realName;
+	private String imgurl;
+	private String descs;
+	private String email;
+	private String remark;
+	private Set<TSinglesel> TSinglesels = new HashSet<TSinglesel>(0);
+	private Set<TSubjective> TSubjectives = new HashSet<TSubjective>(0);
+	private Set<TJudge> TJudges = new HashSet<TJudge>(0);
+	private Set<TFile> TFiles = new HashSet<TFile>(0);
+
+
+	public TStudent() {
+	}
+
+	public TStudent(String id, String pwd) {
+		this.id = id;
+		this.pwd = pwd;
+	}
+
+	public TStudent(String id, TClass TClass, String pwd, String realName,
+			Set<TSinglesel> TSinglesels, Set<TSubjective> TSubjectives,
+			Set<TJudge> TJudges, Set<TFile> TFiles) {
+		this.id = id;
+		this.TClass = TClass;
+		this.pwd = pwd;
+		this.realName = realName;
+		this.TSinglesels = TSinglesels;
+		this.TSubjectives = TSubjectives;
+		this.TJudges = TJudges;
+		this.TFiles = TFiles;
+	}
+
+
+	@Id
+	@Column(name = "id", unique = true, nullable = false, length = 32)
+	public String getId() {
+		return this.id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "classId")
+	public TClass getTClass() {
+		return this.TClass;
+	}
+
+	public void setTClass(TClass TClass) {
+		this.TClass = TClass;
+	}
+
+	@Column(name = "pwd", nullable = false, length = 32)
+	public String getPwd() {
+		return this.pwd;
+	}
+
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+
+	@Column(name = "realName", length = 32)
+	public String getRealName() {
+		return this.realName;
+	}
+
+	public void setRealName(String realName) {
+		this.realName = realName;
+	}
+
+	
+	public String getImgurl() {
+		return imgurl;
+	}
+
+	public void setImgurl(String imgurl) {
+		this.imgurl = imgurl;
+	}
+
+	public String getDescs() {
+		return descs;
+	}
+
+	public void setDescs(String descs) {
+		this.descs = descs;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "TStudent")
+	public Set<TSinglesel> getTSinglesels() {
+		return this.TSinglesels;
+	}
+
+	public void setTSinglesels(Set<TSinglesel> TSinglesels) {
+		this.TSinglesels = TSinglesels;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "TStudent")
+	public Set<TSubjective> getTSubjectives() {
+		return this.TSubjectives;
+	}
+
+	public void setTSubjectives(Set<TSubjective> TSubjectives) {
+		this.TSubjectives = TSubjectives;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "TStudent")
+	public Set<TJudge> getTJudges() {
+		return this.TJudges;
+	}
+
+	public void setTJudges(Set<TJudge> TJudges) {
+		this.TJudges = TJudges;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "TStudent")
+	public Set<TFile> getTFiles() {
+		return this.TFiles;
+	}
+
+	public void setTFiles(Set<TFile> TFiles) {
+		this.TFiles = TFiles;
+	}
+
+}

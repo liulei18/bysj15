@@ -1,0 +1,58 @@
+package com.edu.zzti.ass.testlibrary.dao.impl;
+
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.List;
+
+import org.hibernate.SQLQuery;
+import org.springframework.stereotype.Repository;
+
+import com.edu.zzti.ass.core.dao.impl.BaseDaoImpl;
+import com.edu.zzti.ass.testlibrary.dao.ISubjectiveDao;
+import com.edu.zzti.ass.testlibrary.model.Singlesel;
+import com.edu.zzti.ass.testlibrary.model.Subjective;
+@Repository("subjectiveDao")
+public class SubjectiveDaoImpl extends BaseDaoImpl implements
+		ISubjectiveDao {
+
+	@Override
+	public Serializable addSubjective(Subjective subjective) {
+		
+		return super.save(subjective);
+	}
+
+	@Override
+	public List<Subjective> findAllSubjective() {
+		String hql ="from Subjective";
+		return super.find(hql);
+	}
+
+	@Override
+	public Long countSubjective(String key) {
+		String sql = "SELECT count(*) FROM t_subjective as s ";
+		if (key != null) {
+			sql = sql + "where s.skey1 like '" + key + "%'";
+		}
+		SQLQuery q = getCurrentSession().createSQLQuery(sql);
+		return ((BigInteger) q.uniqueResult()).longValue();
+	}
+
+	@Override
+	public List<Subjective> getListByPage(int currentPage, String key) {
+		System.out.println("-------------------subjective----------------------");
+		if (key == null) {
+			return this.find("from Subjective", currentPage, 10);
+		} else {
+			return this.find("from Subjective as s where s.skey1 like '" + key + "%'", currentPage, 10);
+		}
+	}
+
+	@Override
+	public List<Subjective> getSubjectiveBySecId(Integer sectorId) {
+		String sql = "SELECT *FROM t_subjective where sectorId = '"+sectorId+"' order by id  desc limit 5";
+		
+		 List<Subjective> list= this.findBySql(sql);
+		 return list;
+	}
+
+}

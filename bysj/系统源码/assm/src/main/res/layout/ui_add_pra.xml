@@ -1,0 +1,242 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.edu.zzti.assm.app.AddPraActivity">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="48.0dp"
+        android:background="@drawable/bg_pack_1">
+
+        <ImageView
+            android:id="@+id/ui_back"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:paddingLeft="10.0dip"
+            android:paddingRight="10.0dip"
+            android:src="@drawable/btn_back" />
+
+        <TextView
+            android:id="@+id/center_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="练习设置"
+            android:textColor="#ffffffff"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="30dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="练习名称："
+                    android:textSize="18dp" />
+
+                <EditText
+                    android:id="@+id/ui_pra_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="选择章节："
+                    android:textSize="18dp" />
+
+                <Button
+                    android:id="@+id/ui_btn_pra_jie"
+                    android:layout_width="140dp"
+                    android:layout_height="36dp"
+                    android:text="点击进行选择"
+                    android:textSize="18dp"
+                    android:layout_marginLeft="20dp"
+                    android:textColor="#ffffffff"
+                    android:background="@drawable/g_blue_btn"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="单选设置："
+                    android:textSize="18dp" />
+
+                <EditText
+                    android:id="@+id/ui_pra_dx"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"
+                    android:gravity="center"
+                    android:text="0"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="道"
+                    android:textSize="18dp" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="判断设置："
+                    android:textSize="18dp" />
+
+                <EditText
+                    android:id="@+id/ui_pra_pd"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"
+                    android:gravity="center"
+                    android:text="0"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="道"
+                    android:textSize="18dp" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="简答设置："
+                    android:textSize="18dp" />
+
+                <EditText
+                    android:id="@+id/ui_pra_jd"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"
+                    android:gravity="center"
+                    android:text="0"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="道"
+                    android:textSize="18dp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="截止时间："
+                    android:textSize="18dp" />
+                <EditText
+                    android:id="@+id/ui_pra_time"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"
+                    android:gravity="center"
+                    android:text="20"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="分后截止"
+                    android:textSize="18dp" />
+            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            >
+            <Button
+                android:id="@+id/ui_btn_pra_pre"
+                android:layout_width="200dp"
+                android:layout_height="36dp"
+                android:textColor="#ffffffff"
+                android:background="@drawable/g_blue_btn"
+                android:text="预览"
+                android:textSize="20dp"
+                />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

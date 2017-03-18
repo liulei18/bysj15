@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.edu.zzti.assm.app.PracticeListActivity">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="48.0dp"
+        android:background="@drawable/bg_pack_1">
+
+        <ImageView
+            android:id="@+id/ui_back"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:paddingLeft="10.0dip"
+            android:paddingRight="10.0dip"
+            android:src="@drawable/btn_back" />
+
+        <TextView
+            android:id="@+id/center_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="第几单元"
+            android:textColor="#ffffffff"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/ui_practice_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"></ListView>
+
+</LinearLayout>
+<!-- From: file:/E:/Android/AndroidStudioProjects/Application/assm/src/main/res/layout/ui_practice_list.xml -->

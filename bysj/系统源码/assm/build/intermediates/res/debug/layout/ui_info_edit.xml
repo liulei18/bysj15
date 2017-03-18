@@ -1,0 +1,188 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F6F6F6"
+    tools:context="com.edu.zzti.assm.app.InfoEditActivity">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="48.0dp"
+        android:background="@drawable/bg_pack_1">
+
+        <ImageView
+            android:id="@+id/ui_back"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:paddingLeft="10.0dip"
+            android:paddingRight="10.0dip"
+            android:src="@drawable/btn_back" />
+
+        <TextView
+            android:id="@+id/center_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="个人信息"
+            android:textColor="#ffffffff"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/ui_save"
+            android:layout_width="wrap_content"
+            android:layout_height="35.0dip"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8.0dip"
+            android:gravity="center"
+            android:paddingLeft="10.0dip"
+            android:paddingRight="10.0dip"
+            android:text="保存"
+            android:textColor="#ffffffff"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_mycenter_banner">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="200dp"
+                    android:layout_weight="2"
+                    android:gravity="center">
+
+                    <com.edu.zzti.assm.view.CircleImageView
+                        android:id="@+id/id_photo"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:src="@drawable/ui_photo" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="200dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/ui_info_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"
+                        android:textSize="20dp"
+                        android:lineSpacingExtra="6dp"
+                        android:text="刘帅锋 \n     个性签名：" />
+
+                    <EditText
+                        android:id="@+id/ui_desc"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="#ffffff"
+                        android:layout_marginTop="6dp"
+                        android:inputType="textMultiLine"
+                        android:text="好好学习，天天向上" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="50dp"
+                    android:paddingRight="50dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:textSize="20dp"
+                        android:text="邮箱：" />
+
+                    <EditText
+                        android:id="@+id/ui_email"
+                        android:layout_weight="1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:editable="false" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="50dp"
+                        android:paddingRight="50dp"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:textSize="20dp"
+                            android:text="备注：" />
+
+                        <EditText
+                            android:id="@+id/ui_remark"
+                            android:layout_weight="1"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textMultiLine"
+                            android:minLines="1"
+                            android:maxLines="4"
+                            android:scrollbars="vertical"
+                            android:editable="false" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>
+<!-- From: file:/E:/Android/AndroidStudioProjects/Application/assm/src/main/res/layout/ui_info_edit.xml -->
